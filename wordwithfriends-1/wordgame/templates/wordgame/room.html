@@ -1,0 +1,122 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Word with friends</title>
+	<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="{% static 'styles/room.css' %}">
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/typed.js/2.0.11/typed.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.1/jquery.waypoints.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css"/>
+
+</head>
+<body>
+	<nav class="navbar">
+        <div class="max-width">
+            <div class="logo"><a href="#">WW<span>F</span></a></div>
+            <ul class="menu">
+                <li><a href="/giveup/{{roomId}}/{{host.username}}" class="menu-btn">Giveup</a></li>
+			</ul>
+            <div class="menu-btn">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+	<section class="room" id="room">
+		<div class="max-width">
+			<h2 class="title" id="lastchar"></h2>
+				
+				<div class="room-content">
+					<div class="column left">
+						<div class="text" id="turntext"></div>
+						<p>I am {{request.user.username}}</p>
+						<div class="icons">
+							<div class="row">
+								<i class="fas fa-user"></i>
+								<div class="info">
+									<div class="head">Host</div>
+									<div class="sub-title">{{host.username}}</div>
+								</div>
+							</div>
+							<div class="row">
+								<i class="fas fa-user"></i>
+								<div class="info">
+									<div class="head">Opponent</div>
+									<div id="opponent-name" class="sub-title">{{opponent}}</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="column right">
+
+						<form action="" method="POST">
+							{% csrf_token %}
+							<div class="fields">
+								<div class="field name">
+									<input autofocus autocomplete="off" id="answer" name="answer" style="text-transform: uppercase;" type="text" required>
+								</div>
+							</div>
+							<div class="button">
+								<button type="submit">Confirm</button>
+							</div>
+						</form>
+					</div>
+				</div>
+		</div>
+
+		<div style="position:absolute; bottom:0px;width: 100%;">
+			<div class="progress" style="height: 2px;">
+				<div id="dynamic" class="progress-bar" name="progress-bar" role="progressbar" style="width: 100%;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
+			</div>
+		</div>
+
+	</section>
+	
+	<script>$(function() {
+		setInterval(function() {
+			$.ajax({
+				type:'GET',
+				url:"/room_info/{{roomId}}/",
+				success: function(response) {
+					$("#turntext").html(response.turn + "'s turn");
+					$("#lastchar").html(response.lastChar);
+					if (response.is_over) {
+						location.href='/'
+					}
+					if (response.turn != "{{request.user.username}}"){
+						$("#answer").prop("disabled",true);
+					} else {
+						$("#answer").prop("disabled",false);
+					}
+				},
+				error: function(response) {
+					//alert("An error occured")
+				}
+			});
+		}, 100);
+
+		// Timer
+		var current_progress = 100;
+		setInterval(function() {
+			if ("{{opponent}}" != "None") {
+				current_progress -= 0.1;
+				$("#opponent-name").html("{{opponent}}");
+				$("#dynamic")
+				.css("width", current_progress + "%")
+				.attr("aria-valuenow", current_progress)
+				if (current_progress <= -2) {
+					clearInterval(interval);
+					location.href='/giveup/{{roomId}}/{{request.user.username}}'
+				}
+			}
+		}, 50);
+	});</script>
+	
+</body>

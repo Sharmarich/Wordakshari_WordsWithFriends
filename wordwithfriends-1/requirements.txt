@@ -1,0 +1,6 @@
+django
+redis
+channels
+pyenchant
+whitenoise
+gunicorn
