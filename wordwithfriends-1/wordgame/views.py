@@ -142,7 +142,7 @@ def giveup(request,roomId):
 	room = Room.objects.filter(id = roomId).first()
 
 	if room is not None:
-		if (request.user.username == room.host.usrname) or (request.user.username == room.opponent):
+		if (request.user.username == room.host.username) or (request.user.username == room.opponent):
 			room.is_over = True
 			room.save()
 			return redirect('home')
