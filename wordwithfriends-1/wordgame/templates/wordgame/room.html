@@ -21,7 +21,7 @@
         <div class="max-width">
             <div class="logo"><a href="#">WW<span>F</span></a></div>
             <ul class="menu">
-                <li><a href="/giveup/{{roomId}}/{{host.username}}" class="menu-btn">Giveup</a></li>
+                <li><a href="/giveup/{{roomId}}" class="menu-btn">Giveup</a></li>
 			</ul>
             <div class="menu-btn">
                 <i class="fas fa-bars"></i>
@@ -113,7 +113,7 @@
 				.attr("aria-valuenow", current_progress)
 				if (current_progress <= -2) {
 					clearInterval(interval);
-					location.href='/giveup/{{roomId}}/{{request.user.username}}'
+					location.href='/giveup/{{roomId}}'
 				}
 			}
 		}, 50);
