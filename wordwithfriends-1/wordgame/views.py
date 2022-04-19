@@ -84,6 +84,7 @@ def get_room_info(request,roomId):
 		'turn':room.turn,
 		'host':room.host.username,
 		'opponent':room.opponent,
+		'ans':room.word,
 		'lastChar':room.word[-1],
 		'is_over':room.is_over
 	}
@@ -99,17 +100,26 @@ def room_page(request,roomId):
 		ans = request.POST.get('answer').upper()
 		# d = enchant.Dict("en_US")
 		# ansValid = d.check(ans)
-		ansValid = True
+
+		if room.word[-1] == ans[0]:
+			ansValid = True
+		else:
+			ansValid = False
+
 		if ansValid:
 			info =  UserInfo.objects.filter(host=user).first()
 			info.words_solved += 1
 			info.level = (info.words_solved // 50) or info.level
 			info.save()
 
-		room.turn = room.host.username if (room.turn == room.opponent) else room.opponent
-		room.word = ans
-		room.save()
-		
+			room.turn = room.host.username if (room.turn == room.opponent) else room.opponent
+			room.word = ans
+			room.save()
+
+		else:
+			room.is_over = True
+			room.save()
+
 	if room is None:
 		messages.success(request,'request')
 		return redirect('home')

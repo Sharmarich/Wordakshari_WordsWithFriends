@@ -21,7 +21,7 @@
         <div class="max-width">
             <div class="logo"><a href="#">WW<span>F</span></a></div>
             <ul class="menu">
-                <li><a href="/giveup/{{roomId}}" class="menu-btn">Giveup</a></li>
+                <li><a href="/giveup/{{roomId}}/{{host.username}}" class="menu-btn">Giveup</a></li>
 			</ul>
             <div class="menu-btn">
                 <i class="fas fa-bars"></i>
@@ -85,7 +85,7 @@
 				type:'GET',
 				url:"/room_info/{{roomId}}/",
 				success: function(response) {
-					$("#turntext").html(response.turn + "'s turn");
+					$("#turntext").html(response.ans);
 					$("#lastchar").html(response.lastChar);
 					if (response.is_over) {
 						location.href='/'
